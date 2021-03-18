@@ -1,0 +1,92 @@
+export const productConnection = `
+totalCount
+pageInfo {
+  endCursor
+  startCursor
+  hasNextPage
+  hasPreviousPage
+}
+edges {
+  cursor
+  node {
+    _id
+    ... on CatalogItemProduct {
+      product {
+        _id
+        title
+        slug
+        description
+        vendor
+        isLowQuantity
+        isSoldOut
+        isBackorder
+        metafields {
+          description
+          key
+          namespace
+          scope
+          value
+          valueType
+        }
+        shop {
+          currency {
+            code
+          }
+        }
+        pricing {
+          compareAtPrice {
+            displayAmount
+          }
+          currency {
+            code
+          }
+          displayPrice
+          minPrice
+          maxPrice
+        }
+        primaryImage {
+          URLs {
+            thumbnail
+            small
+            medium
+            large
+            original
+          }
+        }
+      }
+    }
+  }
+}`
+
+export const productsFragment = `
+catalogItems(
+  shopIds: [$shopId]
+  tagIds: $tagIds
+  first: $first
+  last: $last
+  before: $before
+  after: $after
+  sortBy: $sortBy
+  sortByPriceCurrencyCode: $sortByPriceCurrencyCode
+  sortOrder: $sortOrder
+) {
+  ${productConnection}
+}
+`
+
+const getAllProductsQuery = /* GraphQL */ `
+  query catalogItems(
+    $shopId: ID!
+    $tagIds: [ID]
+    $first: ConnectionLimitInt
+    $last: ConnectionLimitInt
+    $before: ConnectionCursor
+    $after: ConnectionCursor
+    $sortBy: CatalogItemSortByField
+    $sortByPriceCurrencyCode: String
+    $sortOrder: SortOrder
+  ) {
+    ${productsFragment}
+  }
+`
+export default getAllProductsQuery
