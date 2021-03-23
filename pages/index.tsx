@@ -21,6 +21,8 @@ export async function getStaticProps({
     preview,
   })
 
+  console.log(products[1])
+
   // const { categories, brands } = await getSiteInfo({ config, preview })
   // const { pages } = await getAllPages({ config, preview })
 

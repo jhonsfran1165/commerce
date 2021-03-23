@@ -3,6 +3,6 @@ const commerce = require('./commerce.config.json')
 module.exports = {
   commerce,
   images: {
-    domains: ['cdn.goodcommerce.io'],
+    domains: ['cdn.goodcommerce.io', 'cdn-dev.goodcommerce.io'],
   },
 }

@@ -1,91 +1,59 @@
-import { Maybe } from './../schema.d'
 import { Product } from '@commerce/types'
 
 import {
   CatalogProduct,
   ImageInfo,
   CatalogProductVariant,
-  Shop,
-  Checkout,
-  CheckoutLineItemEdge,
-  SelectedOption,
-  ImageConnection,
-  ProductVariantConnection,
-  MoneyV2,
-  ProductOption,
+  Maybe,
+  Cart as Checkout,
+  ProductPricingInfo,
+  CartItem,
 } from '../schema'
 
 import type { Cart, LineItem } from '../types'
 
-const money = ({ amount, currencyCode }: MoneyV2) => {
+const money = ({ minPrice, currency }: ProductPricingInfo) => {
   return {
-    value: +amount,
-    currencyCode,
+    value: +minPrice,
+    currencyCode: currency?.code,
   }
 }
 
 const normalizeProductOption = (option: Maybe<CatalogProductVariant>) => {
-  if (option) {
-    const { _id, attributeLabel: displayName, optionTitle } = option
+  const { _id, title: displayName, optionTitle } = option
 
-    return {
-      __typename: 'MultipleChoiceOption',
-      id: _id,
-      displayName,
-      values: {
-        label: optionTitle,
+  return {
+    __typename: 'MultipleChoiceOption',
+    id: _id,
+    displayName,
+    values: [
+      {
+        label: optionTitle || '',
       },
-    }
+    ],
+    ...option,
   }
 }
 
-const normalizeProductImages = (
-  media: Maybe<Array<Maybe<ImageInfo>>> | undefined
-) => {
-  if (media) {
-    return media?.map((m) => ({
-      url: m?.URLs?.large ? m?.URLs?.large : '',
-    }))
-  } else {
-    return [
-      {
-        url: '',
-      },
-    ]
-  }
+const normalizeProductImages = (media: Maybe<Array<Maybe<ImageInfo>>>) => {
+  return media?.map((m) => ({
+    url: m?.URLs?.large ? m?.URLs?.large : '',
+  }))
 }
 
 const normalizeProductVariants = (
-  variants: Maybe<Array<Maybe<CatalogProductVariant>>> | undefined
+  variants: Maybe<Array<Maybe<CatalogProductVariant>>>
 ) => {
-  return (
-    variants &&
-    variants?.map((variant) => {
-      if (variant) {
-        const { _id: id, options, sku, title, pricing: priceV2 } = variant
-
-        return {
-          id,
-          name: title,
-          sku: sku ?? id,
-          price: priceV2[0]?.displayPrice ? +priceV2[0]?.displayPrice : '',
-          listPrice: priceV2[0]?.compareAtPrice?.amount
-            ? +priceV2[0]?.compareAtPrice?.amount
-            : 0,
-          requiresShipping: true,
-          options: (options || []).map((o) => normalizeProductOption(o)),
-        }
-      }
-    })
-  )
+  return variants?.map((variant) => {
+    const { _id: id, options } = variant
+    return {
+      id,
+      options: options && options?.map((o) => normalizeProductOption(o)),
+    }
+  })
 }
 
-export function normalizeProduct({
-  product: productNode,
-}: {
-  product: CatalogProduct
-  shop: Shop
-}): Product {
+export function normalizeProduct(productNode: CatalogProduct): Product {
   const {
     _id,
     title: name,
@@ -108,71 +76,73 @@ export function normalizeProduct({
     })
   )
 
-  const product = {
+  const productVercel = {
     id: _id,
     name: name || '',
     vendor,
     description: description || '',
     path: `/${slug}`,
     slug: slug?.replace(/^\/+|\/+$/g, ''),
-    price: money(pricing[0]?.minPrice),
-    images: normalizeProductImages(media),
-    variants: normalizeProductVariants(variants),
-    options: options ? options.map((o) => normalizeProductOption(o)) : [],
+    price: money(pricing[0]),
+    images: media && normalizeProductImages(media),
+    variants: variants && normalizeProductVariants(variants),
+    options: options && options?.map((o) => normalizeProductOption(o)),
     ...rest,
   }
-
-  return product
+  return productVercel
 }
 
-export function normalizeCart(checkout: Checkout): Cart {
+export function normalizeCart(cart: Checkout): Cart {
   return {
-    id: checkout.id,
+    id: cart._id,
     customerId: '',
     email: '',
-    createdAt: checkout.createdAt,
+    createdAt: cart.createdAt,
     currency: {
-      code: checkout.totalPriceV2?.currencyCode,
+      code: cart?.checkout?.summary.total?.currency?.code || '',
     },
-    taxesIncluded: checkout.taxesIncluded,
-    lineItems: checkout.lineItems?.edges.map(normalizeLineItem),
-    lineItemsSubtotalPrice: +checkout.subtotalPriceV2?.amount,
-    subtotalPrice: +checkout.subtotalPriceV2?.amount,
-    totalPrice: checkout.totalPriceV2?.amount,
+    taxesIncluded: cart?.checkout?.summary?.taxTotal ? true : false,
+    lineItems: cart?.items?.edges?.map(
+      ({ node }) => node && normalizeLineItem(node)
+    ),
+    lineItemsSubtotalPrice: +cart.subtotalPriceV2?.amount,
+    subtotalPrice: +cart.subtotalPriceV2?.amount,
+    totalPrice: cart.totalPriceV2?.amount,
     discounts: [],
   }
 }
 
-function normalizeLineItem({
-  node: { id, title, variant, quantity, ...rest },
-}: CheckoutLineItemEdge): LineItem {
+function normalizeLineItem(node: Maybe<CartItem>): LineItem {
+  const {
+    _id,
+    title,
+    productConfiguration: { productId, productVariantId },
+    variantTitle,
+    price,
+    compareAtPrice,
+    quantity,
+    imageURLs,
+    ...rest
+  } = node
   return {
-    id,
-    variantId: String(variant?.id),
-    productId: String(variant?.id),
+    id: _id,
+    variantId: productVariantId,
+    productId,
     name: `${title}`,
     quantity,
     variant: {
-      id: String(variant?.id),
-      sku: variant?.sku ?? '',
-      name: variant?.title!,
+      id: String(_id),
+      sku: '',
+      name: variantTitle ?? '',
       image: {
-        url: variant?.image?.originalSrc ?? '/product-img-placeholder.svg',
+        url: imageURLs?.large ?? '/product-img-placeholder.svg',
       },
-      requiresShipping: variant?.requiresShipping ?? false,
-      price: variant?.priceV2?.amount,
-      listPrice: variant?.compareAtPriceV2?.amount,
+      requiresShipping: true,
+      price: Number(price?.amount),
+      listPrice: Number(compareAtPrice?.amount),
     },
     path: '',
     discounts: [],
-    options:
-      // By default Shopify adds a default variant with default names, we're removing it. https://community.shopify.com/c/Shopify-APIs-SDKs/Adding-new-product-variant-is-automatically-adding-quot-Default/td-p/358095
-      variant?.title == 'Default Title'
-        ? []
-        : [
-            {
-              value: variant?.title,
-            },
-          ],
+    options: [],
   }
 }

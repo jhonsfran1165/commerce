@@ -2370,7 +2370,7 @@ type Tag implements Node & Deletable {
   featuredProductIds: [ID]
 
   """A string containing the hero image id"""
-  heroMediaUrl: String
+  heroMediaId: String
 
   """All media for a variant"""
   media: [ImageInfo]
@@ -6551,9 +6551,9 @@ type HomePageAsset implements Node & Deletable {
   displayTitle: String!
 
   """
-  The heroMediaUrl is a string containing the hero image id for a HomePageAsset Listing Page
+  The heroMediaId is a string containing the hero image id for a HomePageAsset Listing Page
   """
-  heroMediaUrl: String
+  heroMediaId: String
 
   """All media for a variant"""
   media: [ImageInfo]
@@ -9332,7 +9332,7 @@ input AddTagInput {
   displayTitle: String
 
   """Hero media URL"""
-  heroMediaUrl: String
+  heroMediaId: String
 
   """Whether the tag is visible"""
   isVisible: Boolean!
@@ -9433,7 +9433,7 @@ input UpdateTagInput {
   featuredProductIds: [ID]
 
   """Hero media URL"""
-  heroMediaUrl: String
+  heroMediaId: String
 
   """ID of rule to modify"""
   id: ID!
@@ -11864,7 +11864,7 @@ input AddHomePageAssetInput {
   displayTitle: String!
 
   """Hero media URL"""
-  heroMediaUrl: String
+  heroMediaId: String
 
   """Whether the HomePageAsset is visible"""
   isVisible: Boolean!
@@ -11969,7 +11969,7 @@ input UpdateHomePageAssetInput {
   displayTitle: String!
 
   """Hero media URL"""
-  heroMediaUrl: String
+  heroMediaId: String
 
   """ID of rule to modify"""
   id: ID!

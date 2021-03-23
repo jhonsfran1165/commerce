@@ -2,16 +2,28 @@
   "schema": {
     "http://localhost:3000/graphql": {
       "headers": {
-        "Authorization": "Bearer u4cQzpER_mfsnqPoRxY5MZQ6YfLf1EUQDeUfU0mPSWo.NpG12UquzgGTgY62lY1iFKctqGR3mntk9BgZRLbj9C8"
+        "Authorization": "Bearer kEWKMVlA5TrpuGihrLujnW55TyRcUfTgiXcjqMSF8BM.JYSQslifX4DldwTwYp6J6qQfhXzvnCPDzt3IPcXoKVo"
       }
     }
   },
   "generates": {
     "./framework/reactioncommerce/schema.d.ts": {
-      "plugins": ["typescript", "typescript-operations"]
+      "plugins": ["typescript", "typescript-operations"],
+      "config": {
+        "maybeValue": "T"
+      }
+    },
+    "./framework/reactioncommerce/matcher.d.ts": {
+      "plugins": ["fragment-matcher"],
+      "config": {
+        "useExplicitTyping": true
+      }
     },
     "./framework/reactioncommerce/schema.graphql": {
-      "plugins": ["schema-ast"]
+      "plugins": ["schema-ast"],
+      "config": {
+        "maybeValue": "T"
+      }
     }
   },
   "hooks": {

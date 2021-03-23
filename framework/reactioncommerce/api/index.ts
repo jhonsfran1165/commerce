@@ -52,7 +52,7 @@ const config = new Config({
   cartCookieMaxAge: 60 * 60 * 24 * 30,
   fetch: fetchGraphqlApi,
   customerCookie: SHOPIFY_CUSTOMER_TOKEN_COOKIE,
-  shopId: 'cmVhY3Rpb24vc2hvcDpuWGNzdmRDZ3hlWFpaaDZKQQ==',
+  shopId: 'cmVhY3Rpb24vc2hvcDp1QlRaaGJYTG1iTXZXMjlxNQ==',
 })
 
 export function getConfig(userConfig?: Partial<ReactionCommerceConfig>) {

@@ -165,10 +165,10 @@ export interface Product extends Entity {
   description: string
   slug?: string
   path?: string
-  images: ProductImage[]
-  variants: ProductVariant2[]
+  images?: ProductImage[]
+  variants?: ProductVariant2[]
   price: ProductPrice
-  options: ProductOption[]
+  options?: ProductOption[]
   sku?: string
 }
 
@@ -188,8 +188,8 @@ interface ProductImage {
 }
 
 interface ProductVariant2 {
-  id: string | number
-  options: ProductOption[]
+  id?: string | number
+  options?: ProductOption[]
 }
 
 interface ProductPrice {

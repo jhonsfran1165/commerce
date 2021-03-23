@@ -1,4 +1,4 @@
-export type Maybe<T> = T | null
+export type Maybe<T> = T
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K]
 }
@@ -1356,7 +1356,7 @@ export type Tag = Node &
     /** A list of the IDs of top products in this tag */
     featuredProductIds?: Maybe<Array<Maybe<Scalars['ID']>>>
     /** A string containing the hero image id */
-    heroMediaUrl?: Maybe<Scalars['String']>
+    heroMediaId?: Maybe<Scalars['String']>
     /** All media for a variant */
     media?: Maybe<Array<Maybe<ImageInfo>>>
     /**
@@ -4501,8 +4501,8 @@ export type HomePageAsset = Node &
     descriptionAsset: Scalars['String']
     /** The displayTitle for the HomePageAsset. */
     displayTitle: Scalars['String']
-    /** The heroMediaUrl is a string containing the hero image id for a HomePageAsset Listing Page */
-    heroMediaUrl?: Maybe<Scalars['String']>
+    /** The heroMediaId is a string containing the hero image id for a HomePageAsset Listing Page */
+    heroMediaId?: Maybe<Scalars['String']>
     /** All media for a variant */
     media?: Maybe<Array<Maybe<ImageInfo>>>
     /**
@@ -6877,7 +6877,7 @@ export type AddTagInput = {
   /** Title to display to customers */
   displayTitle?: Maybe<Scalars['String']>
   /** Hero media URL */
-  heroMediaUrl?: Maybe<Scalars['String']>
+  heroMediaId?: Maybe<Scalars['String']>
   /** Whether the tag is visible */
   isVisible: Scalars['Boolean']
   /** Tag metafields */
@@ -6950,7 +6950,7 @@ export type UpdateTagInput = {
   /** A list of the IDs of top products in this tag */
   featuredProductIds?: Maybe<Array<Maybe<Scalars['ID']>>>
   /** Hero media URL */
-  heroMediaUrl?: Maybe<Scalars['String']>
+  heroMediaId?: Maybe<Scalars['String']>
   /** ID of rule to modify */
   id: Scalars['ID']
   /** Whether the tag is visible */
@@ -8760,7 +8760,7 @@ export type AddHomePageAssetInput = {
   /** Title to display to customers */
   displayTitle: Scalars['String']
   /** Hero media URL */
-  heroMediaUrl?: Maybe<Scalars['String']>
+  heroMediaId?: Maybe<Scalars['String']>
   /** Whether the HomePageAsset is visible */
   isVisible: Scalars['Boolean']
   /** HomePageAsset metafields */
@@ -8837,7 +8837,7 @@ export type UpdateHomePageAssetInput = {
   /** Title to display to customers */
   displayTitle: Scalars['String']
   /** Hero media URL */
-  heroMediaUrl?: Maybe<Scalars['String']>
+  heroMediaId?: Maybe<Scalars['String']>
   /** ID of rule to modify */
   id: Scalars['ID']
   /** Whether the HomePageAsset is visible */
