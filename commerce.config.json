@@ -1,5 +1,4 @@
 {
-  "provider": "reactioncommerce",
   "features": {
     "wishlist": false,
     "customCheckout": false
