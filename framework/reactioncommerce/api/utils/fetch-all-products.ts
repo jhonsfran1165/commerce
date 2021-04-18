@@ -1,5 +1,5 @@
-import { ProductEdge } from '../../schema'
-import { ShopifyConfig } from '..'
+import { CatalogItemEdge } from '../../schema'
+import { ReactionCommerceConfig } from '..'
 
 const fetchAllProducts = async ({
   config,
@@ -8,18 +8,18 @@ const fetchAllProducts = async ({
   acc = [],
   cursor,
 }: {
-  config: ShopifyConfig
+  config: ReactionCommerceConfig
   query: string
-  acc?: ProductEdge[]
+  acc?: CatalogItemEdge[]
   variables?: any
   cursor?: string
-}): Promise<ProductEdge[]> => {
+}): Promise<CatalogItemEdge[]> => {
   const { data } = await config.fetch(query, {
     variables: { ...variables, cursor },
   })
 
-  const edges: ProductEdge[] = data.products?.edges ?? []
-  const hasNextPage = data.products?.pageInfo?.hasNextPage
+  const edges: CatalogItemEdge[] = data.catalogItems?.edges ?? []
+  const hasNextPage = data.catalogItems?.pageInfo?.hasNextPage
   acc = acc.concat(edges)
 
   if (hasNextPage) {

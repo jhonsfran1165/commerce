@@ -9,7 +9,7 @@ import { ProductView } from '@components/product'
 
 import { getConfig } from '@framework/api'
 import getProduct from '@framework/product/get-product'
-import getAllPages from '@framework/common/get-all-pages'
+// import getAllPages from '@framework/common/get-all-pages'
 import getAllProductPaths from '@framework/product/get-all-product-paths'
 
 export async function getStaticProps({
@@ -18,7 +18,7 @@ export async function getStaticProps({
   preview,
 }: GetStaticPropsContext<{ slug: string }>) {
   const config = getConfig({ locale })
-  const { pages } = await getAllPages({ config, preview })
+  // const { pages } = await getAllPages({ config, preview })
   const { product } = await getProduct({
     variables: { slug: params!.slug },
     config,
@@ -31,7 +31,7 @@ export async function getStaticProps({
 
   return {
     props: {
-      pages,
+      // pages,
       product,
     },
     revalidate: 200,
@@ -39,7 +39,10 @@ export async function getStaticProps({
 }
 
 export async function getStaticPaths({ locales }: GetStaticPathsContext) {
-  const { products } = await getAllProductPaths()
+  const config = getConfig()
+  const { products } = await getAllProductPaths({
+    variables: { first: 250, shopId: config.shopId },
+  })
 
   return {
     paths: locales

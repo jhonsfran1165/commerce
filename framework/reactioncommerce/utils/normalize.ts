@@ -12,14 +12,14 @@ import {
 
 import type { Cart, LineItem } from '../types'
 
-const money = ({ minPrice, currency }: ProductPricingInfo) => {
+const money = (price: ProductPricingInfo) => {
   return {
-    value: +minPrice,
-    currencyCode: currency?.code,
+    value: +price?.minPrice,
+    currencyCode: price?.currency?.code,
   }
 }
 
-const normalizeProductOption = (option: Maybe<CatalogProductVariant>) => {
+const normalizeProductOption = (option: CatalogProductVariant) => {
   const { _id, title: displayName, optionTitle } = option
 
   return {
@@ -28,29 +28,27 @@ const normalizeProductOption = (option: Maybe<CatalogProductVariant>) => {
     displayName,
     values: [
       {
-        label: optionTitle || '',
+        label: optionTitle,
       },
     ],
     ...option,
   }
 }
 
-const normalizeProductImages = (media: Maybe<Array<Maybe<ImageInfo>>>) => {
-  return media?.map((m) => ({
-    url: m?.URLs?.large ? m?.URLs?.large : '',
-  }))
+const normalizeProductImages = (media: ImageInfo) => {
+  const { URLs } = media
+
+  return {
+    url: URLs?.large ? URLs?.large : '',
+  }
 }
 
-const normalizeProductVariants = (
-  variants: Maybe<Array<Maybe<CatalogProductVariant>>>
-) => {
-  return variants?.map((variant) => {
-    const { _id: id, options } = variant
-    return {
-      id,
-      options: options && options?.map((o) => normalizeProductOption(o)),
-    }
-  })
+const normalizeProductVariants = (variant: CatalogProductVariant) => {
+  const { _id: id, options } = variant
+  return {
+    id,
+    options: options && options?.map((o) => o && normalizeProductOption(o)),
+  }
 }
 
 export function normalizeProduct(productNode: CatalogProduct): Product {
@@ -78,17 +76,18 @@ export function normalizeProduct(productNode: CatalogProduct): Product {
 
   const productVercel = {
     id: _id,
-    name: name || '',
+    name: name,
     vendor,
-    description: description || '',
+    description: description,
     path: `/${slug}`,
     slug: slug?.replace(/^\/+|\/+$/g, ''),
-    price: money(pricing[0]),
-    images: media && normalizeProductImages(media),
-    variants: variants && normalizeProductVariants(variants),
-    options: options && options?.map((o) => normalizeProductOption(o)),
+    price: pricing?.[0] && money(pricing[0]),
+    images: media?.map((o) => o && normalizeProductImages(o)),
+    variants: variants?.map((o) => o && normalizeProductVariants(o)),
+    options: options?.map((o) => o && normalizeProductOption(o)),
     ...rest,
   }
+
   return productVercel
 }
 

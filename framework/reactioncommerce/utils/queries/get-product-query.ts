@@ -1,64 +1,50 @@
 const getProductQuery = /* GraphQL */ `
-  query getProductBySlug($slug: String!) {
-    productByHandle(handle: $slug) {
-      id
-      handle
-      title
-      productType
-      vendor
-      description
-      descriptionHtml
-      options {
-        id
-        name
-        values
-      }
-      priceRange {
-        maxVariantPrice {
-          amount
-          currencyCode
+  query getProductBySlug($slug: String) {
+    catalogItemProduct(slugOrId: $slug) {
+      product {
+        _id
+        slug
+        title
+        vendor
+        description
+        pricing {
+          maxPrice
+          minPrice
+          currency {
+            code
+          }
         }
-        minVariantPrice {
-          amount
-          currencyCode
-        }
-      }
-      variants(first: 250) {
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-        }
-        edges {
-          node {
-            id
+        variants {
+          _id
+          title
+          sku
+          options {
+            _id
+            variantId
             title
-            sku
-            selectedOptions {
-              name
-              value
+            optionTitle
+          }
+          pricing {
+            maxPrice
+            minPrice
+            currency {
+              code
             }
-            priceV2 {
+            compareAtPrice {
               amount
-              currencyCode
-            }
-            compareAtPriceV2 {
-              amount
-              currencyCode
+              currency {
+                code
+              }
             }
           }
         }
-      }
-      images(first: 250) {
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-        }
-        edges {
-          node {
-            originalSrc
-            altText
-            width
-            height
+        media {
+          URLs {
+            thumbnail
+            small
+            medium
+            large
+            original
           }
         }
       }

@@ -1,6 +1,6 @@
 import { GraphQLFetcherResult } from '@commerce/api'
 import { getConfig, ReactionCommerceConfig } from '../api'
-import { CatalogItem, CatalogItemProduct } from '../schema'
+import { CatalogItemProduct } from '../schema'
 import { getAllProductsQuery } from '../utils/queries'
 import { normalizeProduct } from '../utils/normalize'
 import { Product } from '@commerce/types'

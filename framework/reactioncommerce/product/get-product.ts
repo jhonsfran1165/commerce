@@ -1,5 +1,5 @@
 import { GraphQLFetcherResult } from '@commerce/api'
-import { getConfig, ShopifyConfig } from '../api'
+import { getConfig, ReactionCommerceConfig } from '../api'
 import { normalizeProduct, getProductQuery } from '../utils'
 
 type Variables = {
@@ -12,7 +12,7 @@ type ReturnType = {
 
 const getProduct = async (options: {
   variables: Variables
-  config: ShopifyConfig
+  config: ReactionCommerceConfig
   preview?: boolean
 }): Promise<ReturnType> => {
   let { config, variables } = options ?? {}
@@ -22,7 +22,7 @@ const getProduct = async (options: {
     variables,
   })
 
-  const { productByHandle: product } = data
+  const { catalogItemProduct: product } = data
 
   return {
     product: product ? normalizeProduct(product) : null,

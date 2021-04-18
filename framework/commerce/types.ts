@@ -161,35 +161,34 @@ interface Entity {
 }
 
 export interface Product extends Entity {
-  name: string
-  description: string
+  name?: string
+  description?: string
   descriptionHtml?: string
   slug?: string
   path?: string
   images?: ProductImage[]
   variants?: ProductVariant2[]
-  price: ProductPrice
+  price?: ProductPrice
   options?: ProductOption[]
   sku?: string
 }
 
 interface ProductOption extends Entity {
-  displayName: string
+  displayName?: string
   values: ProductOptionValues[]
 }
 
 interface ProductOptionValues {
-  label: string
+  label?: string
   hexColors?: string[]
 }
 
 interface ProductImage {
-  url: string
+  url?: string
   alt?: string
 }
 
-interface ProductVariant2 {
-  id?: string | number
+interface ProductVariant2 extends Entity {
   options?: ProductOption[]
 }
 
