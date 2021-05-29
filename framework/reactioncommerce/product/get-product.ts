@@ -22,7 +22,9 @@ const getProduct = async (options: {
     variables,
   })
 
-  const { catalogItemProduct: product } = data
+  const {
+    catalogItemProduct: { product },
+  } = data
 
   return {
     product: product ? normalizeProduct(product) : null,

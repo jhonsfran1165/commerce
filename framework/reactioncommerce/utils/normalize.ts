@@ -74,6 +74,10 @@ export function normalizeProduct(productNode: CatalogProduct): Product {
     })
   )
 
+  const availableMedia = media?.filter(
+    (img) => img.URLs?.large?.endsWith('null') === false
+  )
+
   const productVercel = {
     id: _id,
     name: name,
@@ -82,7 +86,7 @@ export function normalizeProduct(productNode: CatalogProduct): Product {
     path: `/${slug}`,
     slug: slug?.replace(/^\/+|\/+$/g, ''),
     price: pricing?.[0] && money(pricing[0]),
-    images: media?.map((o) => o && normalizeProductImages(o)),
+    images: availableMedia?.map((o) => o && normalizeProductImages(o)),
     variants: variants?.map((o) => o && normalizeProductVariants(o)),
     options: options?.map((o) => o && normalizeProductOption(o)),
     ...rest,

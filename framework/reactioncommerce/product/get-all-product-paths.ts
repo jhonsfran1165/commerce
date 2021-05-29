@@ -30,8 +30,10 @@ const getAllProductPaths = async (options?: {
     variables,
   })
 
+  console.log(products)
+
   return {
-    products: products?.map(({ node: { product } }: CatalogItemProduct) => ({
+    products: products?.map(({ node: { product } }) => ({
       node: {
         path: `/${product?.slug}`,
       },
